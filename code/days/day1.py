@@ -1,24 +1,45 @@
 from days.base import Basesolver
-import numpy as np
 
 class Solver(Basesolver):
 
     # process input, override if neccessary
     def process_input(self,input):
-        self.input = np.array(input).T
+        rotation_dict = {'R':1,'L':-1}
+        self.input = [[rotation_dict[l[0]]*(l[1] % 100), max(0, int(l[1]/100))] for l in input]
+
+    def set_constants(self):
+        self.position = 50
+        return super().set_constants()
+
+    # set part for checks and also load part dependent stuff, override if neccessary
+    def set_part(self,part):
+        self.set_constants()
+        return super().set_part(part)
 
     def solve_1(self):
-        return sum(np.abs(np.subtract(np.sort(self.input[0]), np.sort(self.input[1]))))
+        c = 0
+        for r in self.input:
+            c += self.rotate_and_count(r)
+        return c
     
     def solve_2(self):
-        # left list
-        numbers_left, counts_left = np.unique(self.input[0], return_counts=True)
-        count_dict_left = dict(zip(numbers_left, counts_left))
-        # right list
-        # exclude numbers not in left list
-        right_list = [n for n in self.input[1] if n in self.input[0]]
-        numbers_right, counts_right = np.unique(right_list, return_counts=True)
-        count_dict_right = dict(zip(numbers_right, counts_right))
+        c = 0
+        for r in self.input:
+            c += self.rotate_and_count(r)
+        return c
 
-        # compute similarity score 
-        return (sum([count_dict_left[n]*count_dict_right[n]*n for n in count_dict_right.keys()]))
+    def rotate_and_count(self,r):
+        # rotate, save relative position
+        relative_position = self.position + r[0]
+        counter_clockwise_pass = self.position != 0 and (relative_position < 0)
+        clockwise_pass = relative_position > 100
+        self.position = (relative_position) % 100
+        # check if 0 is hit
+        hit = self.position == 0
+        # return if 0 % 100 hit
+        if self.part == 1:
+            return int(hit)
+        # check if 0 % 100 got passed or hit and add number of roundtrips
+        if self.part == 2:
+            return int(hit or counter_clockwise_pass or clockwise_pass) + r[1]
+        

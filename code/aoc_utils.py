@@ -13,19 +13,23 @@ def prepare_line(line, day):
         line = line.split(':')[1]
 
     # matrix
-    if day in [4,6]:
+    if day in []:
         line = [c for c in line]
         
     # whitespace seperated values
-    elif day in [1,2]:
+    elif day in []:
         line = line.split()
         
     # key-value like line [str,int]
     if day in []:
         line = [line[0],int(line[1])]
 
+    # char followed by integer
+    if day in [1]:
+        line = [line[0],int(line[1:])]
+
     # convert chars to numbers
-    if day in [1,2]:
+    if day in []:
         line = [int(s) for s in line]
 
     return line
