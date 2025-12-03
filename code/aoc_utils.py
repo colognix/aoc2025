@@ -29,7 +29,7 @@ def prepare_line(line, day):
         line = [line[0],int(line[1:])]
 
     # convert chars to numbers
-    if day in []:
+    if day in [3]:
         line = [int(s) for s in line]
 
     return line
