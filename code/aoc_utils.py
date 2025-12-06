@@ -1,7 +1,7 @@
 
 # basic formatting
 def prepare_line(line, day):
-    # remove linebreaks (windows..)
+    # remove linebreaks 
     line = line.replace('\n','')
 
     # remove whitespaces
